@@ -91,14 +91,14 @@ def ordermaker(list1, users, length):   #creates a list of randomly sorted songs
     position = 0
 
     for x in range(length):
-        if position > len(users):       #this seems to not reset the position if it passes the number of users
-            position == 0
+        if position > len(users)-1:       #this seems to not reset the position if it passes the number of users
+            position = 0
 
         thepick = random.randrange(len(list1[users[position]]))     #bitch
 
-        if list1[individuals[position]][thepick]['track']['name'] not in order:     #checks if the picked song is already added
-            order.append(list1[individuals[position]][thepick]['track']['name'])    #adds the picked song
-            position += 1                                                           #advances the position
+        if list1[users[position]][thepick]['track']['name'] not in order:     #checks if the picked song is already added
+            order.append(list1[users[position]][thepick]['track']['name'])    #adds the picked song
+            position += 1                                                     #advances the position
         
     return order
 
