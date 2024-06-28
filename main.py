@@ -55,7 +55,7 @@ def idsongunique(list1):    #gets the id of every song on the playlist in order
 
 
 songlist = songunique(itemitems)        #not used
-individuals = userunique(itemitems)
+individuals = userunique(itemitems)     #used
 random.shuffle(individuals)         #shuffles the order of the users
 idsonglist = idsongunique(itemitems)    #not used
 
@@ -65,7 +65,7 @@ idsonglist = idsongunique(itemitems)    #not used
 
 
 
-def usersongs(list1, user):
+def usersongs(list1, user):             #adds all songs by a given user to a list
     songorder = []
 
     for x in list1:
@@ -75,7 +75,7 @@ def usersongs(list1, user):
     return songorder
 
 
-def combinedlist(list1, users):
+def combinedlist(list1, users):         #combines the lists of each users songs into a dictionary
     songs_by_user = {}
 
     for x in users:
@@ -86,22 +86,20 @@ def combinedlist(list1, users):
 complete_list = combinedlist(itemitems, individuals)
 
 
-def ordermaker(list1, users, length):
+def ordermaker(list1, users, length):   #creates a list of randomly sorted songs, alternating by user
     order = []
     position = 0
 
     for x in range(length):
-        if position > len(users):
+        if position > len(users):       #this seems to not reset the position if it passes the number of users
             position == 0
 
-        thepick = random.randrange(len(list1[users[position]]))
+        thepick = random.randrange(len(list1[users[position]]))     #bitch
 
-        if list1[individuals[position]][thepick]['track']['name'] not in order:
-            order.append(list1[individuals[position]][thepick]['track']['name'])
-            position += 1
+        if list1[individuals[position]][thepick]['track']['name'] not in order:     #checks if the picked song is already added
+            order.append(list1[individuals[position]][thepick]['track']['name'])    #adds the picked song
+            position += 1                                                           #advances the position
         
-        
-    
     return order
 
 order = ordermaker(complete_list, individuals, playlistlength)
