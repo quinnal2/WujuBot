@@ -14,11 +14,15 @@ results = sp.playlist(wuju_uri, fields=None) #only pulls the first 100 songs, on
 
 print(results['name'])
 
-itemresults = sp.playlist_items(wuju_uri, fields= None)['items']                     #only pulls first 100 songs
-itemresults2 = sp.playlist_items(wuju_uri, fields= None, offset=100)['items']        #pulls songs starting after the first results, need better way incase playlist longer than 200
-itemitems = itemresults + itemresults2
 playlistlength = sp.playlist_tracks(wuju_uri, fields= None)['total']        #detects total playlist length
+itemitems = []
+offset = 0
 
+# get all playlist items regardless of length of playlist
+while offset < playlistlength:
+    next100Items = sp.playlist_items(wuju_uri, fields= None, offset= offset)['items']
+    itemitems = itemitems + next100Items
+    offset += 100
 
 def userunique(list1):      #gets the number of unique users who have added to the playlist
     
@@ -104,4 +108,13 @@ def ordermaker(list1, users, length):   #creates a list of randomly sorted songs
 
 order = ordermaker(complete_list, individuals, playlistlength)
 
-print(order)
+playlistSnapshotId = results['snapshot_id']
+
+fullTracklist = []
+offset = 0
+
+for i, nextSongInOrder in enumerate(order):
+    for j, songInOriginalPlaylist in enumerate(songlist):
+        if nextSongInOrder == songInOriginalPlaylist:
+            #sp.playlist_reorder_items(wuju_uri, j, i, playlistSnapshotId)
+            print('Song found:' + nextSongInOrder)
