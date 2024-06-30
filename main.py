@@ -124,6 +124,8 @@ for i, nextSongInOrder in enumerate(order):
     currentSongOrder = songunique(getAllItems()) # get updated order of songs from current playlist
     for j, songInCurrentPlaylist in enumerate(currentSongOrder):
         if nextSongInOrder == songInCurrentPlaylist:
+            print('Current song: ' + nextSongInOrder)
+            print('Position: ' + str(i))
             sp.playlist_reorder_items(playlist_id = wuju_uri, range_start = j, insert_before = i, snapshot_id = None)
-            time.sleep(.5)
+            time.sleep(1)
             break # exit loop since we found the song
