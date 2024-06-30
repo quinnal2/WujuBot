@@ -1,11 +1,12 @@
 import spotipy
 import random
+import time
 from spotipy.oauth2 import SpotifyOAuth
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id="49cf4af08d524778ac017e8ec64da9ce",
                                                client_secret="3a007a13728a401f876b3075b4cbee6f",
                                                redirect_uri="https://github.com/quinnal2/WujuBot",
-                                               scope="playlist-modify-public"))
+                                               scope="playlist-modify-public"), requests_timeout=10, retries=10)
 
 
 wuju_uri = "6yaoKUTEdAe7kHpMawOePi" #unique id of the wuju
@@ -15,14 +16,19 @@ results = sp.playlist(wuju_uri, fields=None) #only pulls the first 100 songs, on
 print(results['name'])
 
 playlistlength = sp.playlist_tracks(wuju_uri, fields= None)['total']        #detects total playlist length
-itemitems = []
-offset = 0
 
-# get all playlist items regardless of length of playlist
-while offset < playlistlength:
-    next100Items = sp.playlist_items(wuju_uri, fields= None, offset= offset)['items']
-    itemitems = itemitems + next100Items
-    offset += 100
+def getAllItems():
+    items = []
+    offset = 0
+
+    # get all playlist items regardless of length of playlist
+    while offset < playlistlength:
+        next100Items = sp.playlist_items(wuju_uri, fields= None, offset= offset)['items']
+        items = items + next100Items
+        offset += 100
+    return items
+
+itemitems = getAllItems()
 
 def userunique(list1):      #gets the number of unique users who have added to the playlist
     
@@ -114,16 +120,10 @@ print(order)
 
 playlistSnapshotId = results['snapshot_id']
 
-fullTracklist = []
-offset = 0
-
 for i, nextSongInOrder in enumerate(order):
-    for j, songInOriginalPlaylist in enumerate(songlist):
-        if nextSongInOrder == songInOriginalPlaylist:
-            print('Song found:' + nextSongInOrder)
-            print('Old index:' + str(j))
-            print('New index:' + str(i))
-            sp.playlist_reorder_items(playlist_id = wuju_uri, range_start = j, insert_before = i, snapshot_id = playlistSnapshotId)
+    currentSongOrder = songunique(getAllItems()) # get updated order of songs from current playlist
+    for j, songInCurrentPlaylist in enumerate(currentSongOrder):
+        if nextSongInOrder == songInCurrentPlaylist:
+            sp.playlist_reorder_items(playlist_id = wuju_uri, range_start = j, insert_before = i, snapshot_id = None)
+            time.sleep(.5)
             break # exit loop since we found the song
-
-print(len(order))
