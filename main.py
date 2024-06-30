@@ -5,7 +5,7 @@ from spotipy.oauth2 import SpotifyOAuth
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id="49cf4af08d524778ac017e8ec64da9ce",
                                                client_secret="3a007a13728a401f876b3075b4cbee6f",
                                                redirect_uri="https://github.com/quinnal2/WujuBot",
-                                               scope="user-library-read"))
+                                               scope="playlist-modify-public"))
 
 
 wuju_uri = "6yaoKUTEdAe7kHpMawOePi" #unique id of the wuju
@@ -117,10 +117,13 @@ playlistSnapshotId = results['snapshot_id']
 fullTracklist = []
 offset = 0
 
-# for i, nextSongInOrder in enumerate(order):
-#     for j, songInOriginalPlaylist in enumerate(songlist):
-#         if nextSongInOrder == songInOriginalPlaylist:
-#             #sp.playlist_reorder_items(wuju_uri, j, i, playlistSnapshotId)
-#             print('Song found:' + nextSongInOrder)
+for i, nextSongInOrder in enumerate(order):
+    for j, songInOriginalPlaylist in enumerate(songlist):
+        if nextSongInOrder == songInOriginalPlaylist:
+            print('Song found:' + nextSongInOrder)
+            print('Old index:' + str(j))
+            print('New index:' + str(i))
+            sp.playlist_reorder_items(playlist_id = wuju_uri, range_start = j, insert_before = i, snapshot_id = playlistSnapshotId)
+            break # exit loop since we found the song
 
 print(len(order))
