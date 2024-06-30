@@ -89,7 +89,6 @@ def combinedlist(list1, users):         #combines the lists of each users songs 
 
 complete_list = combinedlist(itemitems, individuals)
 
-
 def ordermaker(list1, users, length):   #creates a list of randomly sorted songs, alternating by user
     order = []
     position = 0
@@ -99,22 +98,29 @@ def ordermaker(list1, users, length):   #creates a list of randomly sorted songs
             position = 0
 
         thepick = random.randrange(len(list1[users[position]]))     #bitch
+        order.append(list1[users[position]][thepick]['track']['name'])    #adds the picked song
+        list1[users[position]].remove(list1[users[position]][thepick])
 
-        if list1[users[position]][thepick]['track']['name'] not in order:     #checks if the picked song is already added
-            order.append(list1[users[position]][thepick]['track']['name'])    #adds the picked song
-            position += 1                                                     #advances the position
+        if len(list1[users[position]]) == 0:
+            del list1[users[position]]
+            users.remove(users[position])
+        else:
+             position += 1 #advances the position
         
     return order
 
 order = ordermaker(complete_list, individuals, playlistlength)
+print(order)
 
 playlistSnapshotId = results['snapshot_id']
 
 fullTracklist = []
 offset = 0
 
-for i, nextSongInOrder in enumerate(order):
-    for j, songInOriginalPlaylist in enumerate(songlist):
-        if nextSongInOrder == songInOriginalPlaylist:
-            #sp.playlist_reorder_items(wuju_uri, j, i, playlistSnapshotId)
-            print('Song found:' + nextSongInOrder)
+# for i, nextSongInOrder in enumerate(order):
+#     for j, songInOriginalPlaylist in enumerate(songlist):
+#         if nextSongInOrder == songInOriginalPlaylist:
+#             #sp.playlist_reorder_items(wuju_uri, j, i, playlistSnapshotId)
+#             print('Song found:' + nextSongInOrder)
+
+print(len(order))
