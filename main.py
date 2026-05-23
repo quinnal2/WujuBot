@@ -23,9 +23,12 @@ def getAllItems():
 
     # get all playlist items regardless of length of playlist
     while offset < playlistlength:
-        next100Items = sp.playlist_items(wuju_uri, fields= None, offset= offset)['items']
-        items = items + next100Items
-        offset += 100
+        print(offset)
+        nextItems = sp.playlist_items(wuju_uri, fields=None, limit=100, offset=offset)['items']
+        if not nextItems:
+            break
+        items = items + nextItems
+        offset += len(nextItems)
     return items
 
 itemitems = getAllItems()
